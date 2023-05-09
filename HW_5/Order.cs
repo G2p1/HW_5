@@ -3,14 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HW_5
 {
-    class Order
+    public class Order
     {
-        public int orderId;
-        public DateTime dateTime;
-        public int analysisId;
+        [Key]   
+        public int ord_id { set; get; }
+        public DateTime ord_datetime { set; get; }
+        public int ord_an { set; get; }
 
     }
 }
