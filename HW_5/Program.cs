@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Data;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Configuration;
 using System.Data.SqlClient;
+
 
 namespace HW_5
 {
@@ -14,12 +16,13 @@ namespace HW_5
 
         static void Main(string[] args)
         {
-            var orders = SelectAllOrders(2023);
+            //var orders = SelectAllOrders(2023);
+
+            var orders = SelectAllOrdersDataSet();
             foreach (Order order in orders)
             {
                 Console.WriteLine("ID: " + order.orderId + "\t|Dat Time: " + order.dateTime + "\t|Analysis ID:" + order.analysisId);
             }
-
         }
 
         static List<Order> SelectAllOrders(int currentYear)
@@ -59,6 +62,38 @@ namespace HW_5
 
             connection.Close();
 
+            return orders;
+        }
+
+        static List<Order> SelectAllOrdersDataSet()
+        {
+            var connection = new SqlConnection(CONNECTION_STRIGN);
+            string select = "select * from Orders where YEAR(ord_datetime)=2023";
+
+            connection.Open();
+
+
+            SqlDataAdapter sqlDataAdapter2 = new SqlDataAdapter(select, connection);
+            DataSet ds = new DataSet();
+            sqlDataAdapter2.Fill(ds);
+
+            List<Order> orders = new List<Order>();
+            foreach (DataTable thisTable in ds.Tables)
+            {
+                foreach (DataRow row in thisTable.Rows)
+                {
+
+                    orders.Add(new Order()
+                    {
+                        orderId = (int)row[0],
+                        dateTime = (DateTime)row[1],
+                        analysisId = (int)row[2]
+                    }) ;
+
+                }
+            }
+
+            connection.Close();
             return orders;
         }
 
