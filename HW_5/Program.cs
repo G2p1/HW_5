@@ -30,6 +30,37 @@ namespace HW_5
                 Console.WriteLine("ID: " + order.ord_id + "\t|Dat Time: " + order.ord_datetime + "\t|Analysis ID:" + order.ord_an);
 
             }
+
+            //context.Add(
+            //    new Order()
+            //    {
+            //        ord_id = 7,
+            //        ord_datetime=new DateTime(23, 1 ,1),
+            //        ord_an = 2
+            //    }
+            //    );
+
+            //context.SaveChanges();
+
+            context.Update(
+                new Order()
+                {
+                    ord_id = 2,
+                    ord_datetime = new DateTime(07, 8, 8),
+                    ord_an=2
+                }
+                );
+            context.SaveChanges();
+
+            context.Remove(
+                new Order()
+                {
+                    ord_id=8
+                }
+                );
+
+            context.SaveChanges();
+
             //var ordersC = SelectAllOrders(2023);
             //foreach (Order order in ordersC)
             //{
