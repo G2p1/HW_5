@@ -16,13 +16,32 @@ namespace HW_5
 
         static void Main(string[] args)
         {
-            //var orders = SelectAllOrders(2023);
-
-            var orders = SelectAllOrdersDataSet();
-            foreach (Order order in orders)
+            var ordersC = SelectAllOrders(2023);
+            foreach (Order order in ordersC)
             {
                 Console.WriteLine("ID: " + order.orderId + "\t|Dat Time: " + order.dateTime + "\t|Analysis ID:" + order.analysisId);
             }
+            
+            var ordersD = SelectAllOrdersDataSet();
+            foreach (Order order in ordersD)
+            {
+                Console.WriteLine("ID: " + order.orderId + "\t|Dat Time: " + order.dateTime + "\t|Analysis ID:" + order.analysisId);
+            }
+
+            Order orderCreate = new Order()
+            {
+                orderId = 7,
+                dateTime = new DateTime(2023, 4, 26),
+                analysisId = 2
+            };
+
+            //Create(orderCreate);
+
+            var count = Update(orderCreate);
+            Console.WriteLine(count);
+
+            var count2 = Delete(orderCreate);
+            Console.WriteLine(count);
         }
 
         static List<Order> SelectAllOrders(int currentYear)
@@ -63,6 +82,54 @@ namespace HW_5
             connection.Close();
 
             return orders;
+        }
+        static void Create(Order order)
+        {
+            var connection = new SqlConnection(CONNECTION_STRIGN);
+            var command = connection.CreateCommand();
+
+            command.CommandText = "INSERT INTO Orders(ord_id, ord_datetime, ord_an) values (@id, @datetime, @anid); select SCOPE_IDENTITY();";
+            command.Parameters.Add(new SqlParameter("@id", order.orderId));
+            command.Parameters.Add(new SqlParameter("@datetime", order.dateTime));
+            command.Parameters.Add(new SqlParameter("@anid", order.analysisId));
+
+            connection.Open();
+
+            command.ExecuteScalar();
+
+            connection.Close();
+            
+        }
+
+        static int Update(Order order)
+        {
+            var connection = new SqlConnection(CONNECTION_STRIGN);
+            var command = connection.CreateCommand();
+
+            command.CommandText = "UPDATE Orders SET ord_id=@id, ord_datetime = @datetime, ord_an=@anid where ord_id=@id;";
+            command.Parameters.Add(new SqlParameter("@id", order.orderId));
+            command.Parameters.Add(new SqlParameter("@datetime", order.dateTime));
+            command.Parameters.Add(new SqlParameter("@anid", order.analysisId));
+
+            connection.Open();
+            var count = command.ExecuteNonQuery();
+            connection.Close();
+            return count;
+
+        }
+        static int Delete(Order order)
+        {
+            var connection = new SqlConnection(CONNECTION_STRIGN);
+            var command = connection.CreateCommand();
+
+            command.CommandText = "delete from Orders where ord_id=@id;";
+            command.Parameters.Add(new SqlParameter("@id", order.orderId));
+
+            connection.Open();
+            var count = command.ExecuteNonQuery();
+            connection.Close();
+            return count;
+
         }
 
         static List<Order> SelectAllOrdersDataSet()
