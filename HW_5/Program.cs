@@ -46,8 +46,8 @@ namespace HW_5
 
         static List<Order> SelectAllOrders(int currentYear)
         {
-            var connection = new SqlConnection(CONNECTION_STRIGN);
-            var commandCount = connection.CreateCommand();
+            using (var connection = new SqlConnection(CONNECTION_STRIGN)) { 
+                var commandCount = connection.CreateCommand();
             var commandSelect = connection.CreateCommand();
 
             commandCount.CommandText = "select count(ord_id) from Orders where YEAR(ord_datetime)=@currentYear";
@@ -82,11 +82,12 @@ namespace HW_5
             connection.Close();
 
             return orders;
+            }
         }
         static void Create(Order order)
         {
-            var connection = new SqlConnection(CONNECTION_STRIGN);
-            var command = connection.CreateCommand();
+            using (var connection = new SqlConnection(CONNECTION_STRIGN)) { 
+                var command = connection.CreateCommand();
 
             command.CommandText = "INSERT INTO Orders(ord_id, ord_datetime, ord_an) values (@id, @datetime, @anid); select SCOPE_IDENTITY();";
             command.Parameters.Add(new SqlParameter("@id", order.orderId));
@@ -98,12 +99,13 @@ namespace HW_5
             command.ExecuteScalar();
 
             connection.Close();
-            
+            }
+
         }
 
         static int Update(Order order)
         {
-            var connection = new SqlConnection(CONNECTION_STRIGN);
+           using( var connection = new SqlConnection(CONNECTION_STRIGN)) { 
             var command = connection.CreateCommand();
 
             command.CommandText = "UPDATE Orders SET ord_id=@id, ord_datetime = @datetime, ord_an=@anid where ord_id=@id;";
@@ -114,13 +116,14 @@ namespace HW_5
             connection.Open();
             var count = command.ExecuteNonQuery();
             connection.Close();
+            
             return count;
-
+            }
         }
         static int Delete(Order order)
         {
-            var connection = new SqlConnection(CONNECTION_STRIGN);
-            var command = connection.CreateCommand();
+            using (var connection = new SqlConnection(CONNECTION_STRIGN)) { 
+                var command = connection.CreateCommand();
 
             command.CommandText = "delete from Orders where ord_id=@id;";
             command.Parameters.Add(new SqlParameter("@id", order.orderId));
@@ -129,13 +132,13 @@ namespace HW_5
             var count = command.ExecuteNonQuery();
             connection.Close();
             return count;
-
+            }
         }
 
         static List<Order> SelectAllOrdersDataSet()
         {
-            var connection = new SqlConnection(CONNECTION_STRIGN);
-            string select = "select * from Orders where YEAR(ord_datetime)=2023";
+            using (var connection = new SqlConnection(CONNECTION_STRIGN)) { 
+                string select = "select * from Orders where YEAR(ord_datetime)=2023";
 
             connection.Open();
 
@@ -162,6 +165,7 @@ namespace HW_5
 
             connection.Close();
             return orders;
+            }
         }
 
     }
